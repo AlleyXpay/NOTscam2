@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Телеграм Бот: Тапалка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        h1 {
+            color: #ff6347;
+        }
+        .menu, .game-container, .score {
+            margin-top: 50px;
+        }
+        .button {
+            padding: 15px 30px;
+            font-size: 20px;
+            color: #fff;
+            background-color: #ff6347;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .button:hover {
+            background-color: #e55347;
+        }
+        .score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .info {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .menu p {
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тапалка Бот</h1>
+
+    <!-- Главное меню -->
+    <div class="menu">
+        <p>Трофеи: <span id="trophies">0</span></p>
+        <button class="button" onclick="startGame()">Играть</button>
+    </div>
+
+    <!-- Игра -->
+    <div class="game-container" style="display: none;">
+        <p class="info">Нажимай на кнопки, чтобы заработать очки и победить противника!</p>
+        <button class="button" onclick="tap('button_1')">Тапнуть! (1 Очко)</button>
+        <button class="button" onclick="tap('button_2')">Ударить! (3 Очка)</button>
+        <button class="button" onclick="tap('button_3')">Особый Удар! (5 Очков)</button>
+
+        <div class="score">
+            <p>Ваши очки: <span id="user-score">0</span></p>
+            <p>Очки противника: <span id="enemy-score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        let trophies = 0;
+        let userScore = 0;
+        let enemyScore = 0;
+
+        // Запуск игры
+        function startGame() {
+            // Скрываем главное меню и показываем игру
+            document.querySelector('.menu').style.display = 'none';
+            document.querySelector('.game-container').style.display = 'block';
+        }
+
+        // Функция для нажатия на кнопки
+        function tap(buttonType) {
+            // Инкрементируем очки в зависимости от кнопки
+            if (buttonType === 'button_1') {
+                userScore += 1;
+            } else if (buttonType === 'button_2') {
+                userScore += 3;
+            } else if (buttonType === 'button_3') {
+                userScore += 5;
+            }
+
+            // Противник (рандомные очки)
+            enemyScore += Math.floor(Math.random() * 6);
+
+            // Обновляем счет
+            document.getElementById('user-score').textContent = userScore;
+            document.getElementById('enemy-score').textContent = enemyScore;
+
+            // Проверяем победу
+            if (userScore >= 20) {
+                alert("Вы победили!");
+                trophies += 5; // Начисляем трофеи за победу
+                updateTrophies();
+                resetGame();
+            } else if (enemyScore >= 20) {
+                alert("Противник победил!");
+                trophies -= 3; // Отнимаем трофеи за поражение
+                if (trophies < 0) trophies = 0; // Не допускаем отрицательных трофеев
+                updateTrophies();
+                resetGame();
+            }
+        }
+
+        // Обновление трофеев
+        function updateTrophies() {
+            document.getElementById('trophies').textContent = trophies;
+        }
+
+        // Функция для сброса игры
+        function resetGame() {
+            userScore = 0;
+            enemyScore = 0;
+            document.getElementById('user-score').textContent = userScore;
+            document.getElementById('enemy-score').textContent = enemyScore;
+            // Показываем главное меню после окончания игры
+            document.querySelector('.game-container').style.display = 'none';
+            document.querySelector('.menu').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
